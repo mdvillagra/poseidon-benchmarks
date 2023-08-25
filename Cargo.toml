@@ -9,3 +9,17 @@ edition = "2021"
 ark-ff = "0.4.0"
 ark-bn254 = { version = "0.4.0" }
 ark-std = { version = "0.4.0" }
+[lib]
+name = "poseidon_functions"
+path = "src/lib.rs"
+
+[[bin]]
+name = "poseidon_benchmarks"
+path = "src/main.rs"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "poseidon_bench"
+harness = false
