@@ -1,13 +1,5 @@
 extern crate poseidon_functions;
 
-mod dusk_poseidon;
-use dusk_poseidon::src::lib::sponge as dusk_sponge;
-use dusk_plonk::prelude::*;
-
-use ark_std::rand::rngs::StdRng;
-use ark_std::rand::SeedableRng;
-
-
 
 fn main() {
     let cad = "402384238";

@@ -11,6 +11,10 @@ mod dusk_poseidon;
 use dusk_poseidon::src::lib::sponge as dusk_sponge;
 //use dusk_plonk::prelude::*;
 use dusk_plonk::prelude::BlsScalar;
+
+
+
+
 /*
 Calls poseidon hash based on dusk-network
 Input is a number in the scalar field of BLS12_381
@@ -28,7 +32,7 @@ pub fn poseidon_dusk_hash() -> BlsScalar {
         BlsScalar::random(rng),
     ];
 
-    let cad = format!("{:#x}", BlsScalar::random(rng));
+    //let cad = format!("{:#x}", BlsScalar::random(rng));
 
     dusk_sponge::hash(&message)
 }
