@@ -9,6 +9,36 @@ edition = "2021"
 ark-ff = "0.4.0"
 ark-bn254 = { version = "0.4.0" }
 ark-std = { version = "0.4.0" }
+dusk-bls12_381 = { version = "0.11", default-features = false }
+dusk-jubjub = { version = "0.12", default-features = false }
+dusk-bytes = "0.1"
+dusk-hades = "0.21"
+dusk-plonk = { version = "0.14", default-features = false, features = ["alloc"] }
+rkyv = { version = "0.7", optional = true, default-features = false }
+bytecheck = { version = "0.6", optional = true, default-features = false }
+
+[features]
+default = [
+    "dusk-plonk/std",
+    "dusk-jubjub/std",
+    "dusk-bls12_381/default",
+    "alloc",
+]
+alloc = [
+    "dusk-hades/plonk"
+]
+merkle = []
+size_16 = ["rkyv/size_16"]
+size_32 = ["rkyv/size_32"]
+size_64 = ["rkyv/size_64"]
+rkyv-impl = [
+    "rkyv/validation",
+    "rkyv/alloc",
+    "rkyv",
+    "bytecheck",
+    "dusk-bls12_381/rkyv-impl"
+]
+
 [lib]
 name = "poseidon_functions"
 path = "src/lib.rs"
@@ -19,6 +49,7 @@ path = "src/main.rs"
 
 [dev-dependencies]
 criterion = "0.3"
+rand = { version = "0.8", default-features = false, features = ["getrandom", "std_rng"] }
 
 [[bench]]
 name = "poseidon_bench"
