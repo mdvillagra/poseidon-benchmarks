@@ -1,0 +1,83 @@
+[package]
+name = "dusk-poseidon"
+version = "0.30.1"
+description = "Implementation of Poseidon hash algorithm over the Bls12-381 Scalar field."
+categories = ["algorithms", "cryptography", "no-std", "wasm"]
+keywords = ["cryptography", "zero-knowledge", "crypto"]
+
+repository = "https://github.com/dusk-network/poseidon252"
+authors = [
+    "zer0 <matteo@dusk.network>",
+    "vlopes11 <victor@dusk.network>",
+    "CPerezz <carlos@dusk.network>",
+    "Kristoffer Ström <kristoffer@dusk.network>",
+    "Eduardo Leegwater Simões <eduardo@dusk.network>",
+    "Moana Marcello <moana@dusk.network>",
+]
+edition = "2021"
+license = "MPL-2.0"
+
+[dependencies]
+dusk-bls12_381 = { version = "0.11", default-features = false }
+dusk-jubjub = { version = "0.12", default-features = false }
+dusk-bytes = "0.1"
+dusk-hades = "0.21"
+dusk-plonk = { version = "0.14", default-features = false, features = ["alloc"] }
+rkyv = { version = "0.7", optional = true, default-features = false }
+bytecheck = { version = "0.6", optional = true, default-features = false }
+
+[dev-dependencies]
+criterion = "0.3"
+rand = { version = "0.8", default-features = false, features = ["getrandom", "std_rng"] }
+
+[features]
+default = [
+    "dusk-plonk/std",
+    "dusk-jubjub/std",
+    "dusk-bls12_381/default",
+    "alloc",
+]
+alloc = [
+    "dusk-hades/plonk"
+]
+merkle = []
+size_16 = ["rkyv/size_16"]
+size_32 = ["rkyv/size_32"]
+size_64 = ["rkyv/size_64"]
+rkyv-impl = [
+    "rkyv/validation",
+    "rkyv/alloc",
+    "rkyv",
+    "bytecheck",
+    "dusk-bls12_381/rkyv-impl"
+]
+
+[profile.dev]
+opt-level = 3
+debug = false
+rpath = false
+lto = false
+debug-assertions = false
+codegen-units = 16
+panic = 'unwind'
+incremental = false
+overflow-checks = false
+
+[profile.release]
+debug = false
+panic = 'abort'
+lto = true
+incremental = false
+codegen-units = 1
+
+[[bench]]
+name = "sponge"
+harness = false
+
+[[bench]]
+name = "cipher_encrypt"
+harness = false
+
+[[bench]]
+name = "cipher_decrypt"
+harness = false

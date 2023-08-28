@@ -9,8 +9,8 @@ use ark_std::rand::SeedableRng;
 //dusk-network libraries
 mod dusk_poseidon;
 use dusk_poseidon::src::lib::sponge as dusk_sponge;
-use dusk_plonk::prelude::*;
-
+//use dusk_plonk::prelude::*;
+use dusk_plonk::prelude::BlsScalar;
 /*
 Calls poseidon hash based on dusk-network
 Input is a number in the scalar field of BLS12_381
