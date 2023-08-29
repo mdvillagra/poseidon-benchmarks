@@ -12,6 +12,10 @@ use dusk_poseidon::src::lib::sponge as dusk_sponge;
 //use dusk_plonk::prelude::*;
 use dusk_plonk::prelude::BlsScalar;
 
+//other precompiles
+//use sha2::Sha256;
+//use ripemd::Ripemd160;
+
 
 
 
