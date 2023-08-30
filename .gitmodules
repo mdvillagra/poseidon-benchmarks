@@ -4,4 +4,4 @@
 
 [submodule "src/poseidon_cryptoexperts"]
 	path = src/poseidon_cryptoexperts
-	url = https://github.com/CryptoExperts/poseidon.git
+	url = https://github.com/mdvillagra/poseidon.git
