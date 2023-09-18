@@ -1,10 +1,6 @@
-[submodule "Poseidon252"]
-	path = Poseidon252
-	url = https://github.com/dusk-network/Poseidon252.git
-
 [submodule "src/poseidon_cryptoexperts"]
 	path = src/poseidon_cryptoexperts
 	url = https://github.com/mdvillagra/poseidon.git
-[submodule "src/poseidon-rust"]
-	path = src/poseidon-rust
+[submodule "src/poseidon_rust"]
+	path = src/poseidon_rust
 	url = https://github.com/mdvillagra/poseidon-rust.git
