@@ -5,3 +5,6 @@
 [submodule "src/poseidon_cryptoexperts"]
 	path = src/poseidon_cryptoexperts
 	url = https://github.com/mdvillagra/poseidon.git
+[submodule "src/poseidon-rust"]
+	path = src/poseidon-rust
+	url = https://github.com/mdvillagra/poseidon-rust.git
