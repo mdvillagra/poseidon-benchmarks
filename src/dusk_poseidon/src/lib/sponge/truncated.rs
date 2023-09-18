@@ -37,9 +37,7 @@ const TRUNCATION_LIMIT: BlsScalar = BlsScalar([
 ///
 /// [`hash`]: crate::sponge::hash
 pub fn hash(messages: &[BlsScalar]) -> JubJubScalar {
-    JubJubScalar::from_raw(
-        (sponge::hash(messages) & TRUNCATION_LIMIT).reduce().0,
-    )
+    JubJubScalar::from_raw((sponge::hash(messages) & TRUNCATION_LIMIT).reduce().0)
 }
 
 /// Mirror the implementation of [`hash`] inside of a PLONK circuit.

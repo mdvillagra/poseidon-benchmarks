@@ -115,8 +115,7 @@ impl Serializable<CIPHER_BYTES_SIZE> for PoseidonCipher {
 
     /// Create an instance from a previous `PoseidonCipher::to_bytes` function
     fn from_bytes(bytes: &[u8; Self::SIZE]) -> Result<Self, Self::Error> {
-        let mut cipher: [BlsScalar; CIPHER_SIZE] =
-            [BlsScalar::zero(); CIPHER_SIZE];
+        let mut cipher: [BlsScalar; CIPHER_SIZE] = [BlsScalar::zero(); CIPHER_SIZE];
 
         for (i, scalar) in cipher.iter_mut().enumerate() {
             let idx = i * BlsScalar::SIZE;
@@ -188,11 +187,7 @@ impl PoseidonCipher {
     ///
     /// The message size will be truncated to [`PoseidonCipher::capacity()`]
     /// bits
-    pub fn encrypt(
-        message: &[BlsScalar],
-        secret: &JubJubAffine,
-        nonce: &BlsScalar,
-    ) -> Self {
+    pub fn encrypt(message: &[BlsScalar], secret: &JubJubAffine, nonce: &BlsScalar) -> Self {
         let zero = BlsScalar::zero();
         let mut strategy = ScalarStrategy::new();
 

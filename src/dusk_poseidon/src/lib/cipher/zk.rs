@@ -23,8 +23,7 @@ impl PoseidonCipher {
         let domain = BlsScalar::from_raw([0x100000000u64, 0, 0, 0]);
         let domain = composer.append_constant(domain);
 
-        let length =
-            BlsScalar::from_raw([PoseidonCipher::capacity() as u64, 0, 0, 0]);
+        let length = BlsScalar::from_raw([PoseidonCipher::capacity() as u64, 0, 0, 0]);
         let length = composer.append_constant(length);
 
         [domain, length, ks0, ks1, nonce]
@@ -49,8 +48,7 @@ where
 
     let mut cipher = [C::ZERO; PoseidonCipher::cipher_size()];
 
-    let mut state =
-        PoseidonCipher::initial_state_circuit(composer, ks0, ks1, nonce);
+    let mut state = PoseidonCipher::initial_state_circuit(composer, ks0, ks1, nonce);
 
     GadgetStrategy::gadget(composer, &mut state);
 
@@ -61,8 +59,7 @@ where
             C::ZERO
         };
 
-        let constraint =
-            Constraint::new().left(1).a(state[i + 1]).right(1).b(x);
+        let constraint = Constraint::new().left(1).a(state[i + 1]).right(1).b(x);
 
         state[i + 1] = composer.gate_add(constraint);
 
@@ -92,8 +89,7 @@ where
     let ks1 = *shared_secret.y();
 
     let mut message = [C::ZERO; PoseidonCipher::capacity()];
-    let mut state =
-        PoseidonCipher::initial_state_circuit(composer, ks0, ks1, nonce);
+    let mut state = PoseidonCipher::initial_state_circuit(composer, ks0, ks1, nonce);
 
     GadgetStrategy::gadget(composer, &mut state);
 

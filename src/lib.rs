@@ -1,10 +1,10 @@
 //arkworks libraries
 mod poseidon_ark;
-use ark_bn254::Fr;
-use ark_std::str::FromStr;
 use crate::poseidon_ark::lib::Poseidon;
+use ark_bn254::Fr;
 use ark_std::rand::rngs::StdRng;
 use ark_std::rand::SeedableRng;
+use ark_std::str::FromStr;
 
 //dusk-network libraries
 mod dusk_poseidon;
@@ -15,9 +15,6 @@ use dusk_plonk::prelude::BlsScalar;
 //other precompiles
 //use sha2::Sha256;
 //use ripemd::Ripemd160;
-
-
-
 
 /*
 Calls poseidon hash based on dusk-network
@@ -40,7 +37,6 @@ pub fn poseidon_dusk_hash() -> BlsScalar {
 
     dusk_sponge::hash(&message)
 }
-
 
 /*
 Calls poseidon hash based on arkworks

@@ -119,8 +119,7 @@ where
             } else if i == last_iteration {
                 GadgetStrategy::gadget(composer, &mut state);
 
-                let constraint =
-                    Constraint::new().left(1).a(state[1]).constant(1);
+                let constraint = Constraint::new().left(1).a(state[1]).constant(1);
 
                 state[1] = composer.gate_add(constraint);
             }

@@ -73,10 +73,7 @@ pub fn hash<const A: usize>(messages: &[BlsScalar; A]) -> BlsScalar {
 ///
 /// The returned value is the witness of the hash of the levels.
 #[cfg(feature = "alloc")]
-pub fn gadget<C, const A: usize>(
-    composer: &mut C,
-    messages: &[Witness; A],
-) -> Witness
+pub fn gadget<C, const A: usize>(composer: &mut C, messages: &[Witness; A]) -> Witness
 where
     C: Composer,
 {

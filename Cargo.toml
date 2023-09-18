@@ -58,7 +58,7 @@ name = "poseidon_benchmarks"
 path = "src/main.rs"
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = { version = "0.4.0", features = ["html_reports"] }
 rand = { version = "0.8", default-features = false, features = ["getrandom", "std_rng"] }
 
 [build-dependencies]
