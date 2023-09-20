@@ -1,7 +1,7 @@
 use ark_std::rand::rngs::StdRng;
 use ark_std::rand::SeedableRng;
 use ark_std::UniformRand;
-use criterion::{criterion_group, criterion_main, Criterion, BenchmarkId};
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 use poseidon_functions::poseidon_ark_hash;
 use std::time::Duration;
 
@@ -20,39 +20,40 @@ use dusk_poseidon::src::lib::sponge::hash as dusk_hash;
 
 fn poseidon_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Poseidon");
+    let n_inputs = 2;
 
-    //dusk initialization
-    let rng = &mut StdRng::seed_from_u64(0xc10d);
+    let mut ark_input: Vec<ark_Fr> = Vec::new();
     let mut dusk_input: Vec<dusk_BlsScalar> = Vec::new();
-    dusk_input.clear();
-    for _i in 0..5 {
-        dusk_input.push(dusk_BlsScalar::random(rng));
-    }
 
-    for rounds in 0..3 {
-        //ark initialization
-        let mut ark_input: Vec<ark_Fr> = Vec::new();
+    for rounds in 0..n_inputs {
+        //arkworks input preparation
         let mut rng = ark_std::test_rng();
-        ark_input.clear();
         for _i in 0..5 {
             ark_input.push(ark_Fr::rand(&mut rng));
         }
+        let ark_pos = ark_Poseidon::new();
 
-        let a_pos = ark_Poseidon::new();
+        //dusk-network input preparation
+        let rng = &mut StdRng::seed_from_u64(0xc10d);
+        for _i in 0..5 {
+            dusk_input.push(dusk_BlsScalar::random(rng));
+        }
 
-        //group
-        //    .significance_level(0.05)
-        //    .sample_size(100)
-        //    .measurement_time(Duration::from_secs(11));
-        //group.bench_function("Ark Hash", |b| b.iter(|| a_pos.hash(ark_input.clone())));
+        //arkworks test
         group.bench_with_input(
-            BenchmarkId::new("Ark Hash", rounds as u32),
+            BenchmarkId::new("Arkworks", rounds as u32),
             &ark_input,
-            |b, ark_input| b.iter(|| a_pos.hash(ark_input.clone())),
+            |b, ark_input| b.iter(|| ark_pos.hash(ark_input.clone())),
+        );
+
+        //dusk-network test
+        group.bench_with_input(
+            BenchmarkId::new("Dusk-Network", rounds as u32),
+            &dusk_input,
+            |b, dusk_input| b.iter(|| dusk_hash(&dusk_input)),
         );
 
         //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
-        //group.bench_function("Dusk Hash", |b| b.iter(|| dusk_hash(&dusk_input)));
     }
     group.finish();
 }
