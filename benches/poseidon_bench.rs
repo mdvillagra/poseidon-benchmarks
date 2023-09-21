@@ -1,7 +1,10 @@
 use ark_std::rand::rngs::StdRng;
 use ark_std::rand::SeedableRng;
 use ark_std::UniformRand;
-use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
+
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, BenchmarkGroup, SamplingMode};
+use lambdaworks_crypto::merkle_tree::traits::IsMerkleTreeBackend;
+use lambdaworks_math::field::traits::IsPrimeField;
 use poseidon_functions::poseidon_ark_hash;
 use std::time::Duration;
 
@@ -15,28 +18,47 @@ mod dusk_poseidon;
 use dusk_plonk::prelude::BlsScalar as dusk_BlsScalar;
 use dusk_poseidon::src::lib::sponge::hash as dusk_hash;
 
-//#[path="../src/poseidon_rust/src/lib.rs"]
-//mod poseidon_rust;
+use lambdaworks_crypto::hash::poseidon as lambda_poseidon;
+use lambdaworks_math::elliptic_curve::short_weierstrass::curves::bls12_381::curve::BLS12381FieldElement;
+
+use hex_wrapper::Hex64;
 
 fn poseidon_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Poseidon");
-    let n_inputs = 2;
+    group.sampling_mode(SamplingMode::Flat);
+
+    let n_inputs = 5; //number of inputs to try
+    let n_elems = 4; //number of elements per try
 
     let mut ark_input: Vec<ark_Fr> = Vec::new();
     let mut dusk_input: Vec<dusk_BlsScalar> = Vec::new();
+    let mut lambda_input: Vec<BLS12381FieldElement> = Vec::new();
+
+    //Poseidon instantiations
+    let ark_pos = ark_Poseidon::new();
+    let lambda_pos = lambda_poseidon::Poseidon::new();
 
     for rounds in 0..n_inputs {
-        //arkworks input preparation
-        let mut rng = ark_std::test_rng();
-        for _i in 0..5 {
-            ark_input.push(ark_Fr::rand(&mut rng));
-        }
-        let ark_pos = ark_Poseidon::new();
+        let mut ark_rng = ark_std::test_rng();
+        let dusk_rng = &mut StdRng::seed_from_u64(0xc10d);
 
-        //dusk-network input preparation
-        let rng = &mut StdRng::seed_from_u64(0xc10d);
-        for _i in 0..5 {
-            dusk_input.push(dusk_BlsScalar::random(rng));
+        for _i in 0..n_elems {
+            //arkworks input preparation
+            ark_input.push(ark_Fr::rand(&mut ark_rng));
+            //dusk-network input preparation
+            dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+            //lambdaworks input preparation
+            let hex_input = format!(
+                "{}{}{}{}{}{}",
+                Hex64::rand().to_string(),
+                Hex64::rand().to_string(),
+                Hex64::rand().to_string(),
+                Hex64::rand().to_string(),
+                Hex64::rand().to_string(),
+                Hex64::rand().to_string()
+            );
+            let element = BLS12381FieldElement::from_hex(&hex_input[0..]).unwrap();
+            lambda_input.push(element);
         }
 
         //arkworks test
@@ -51,6 +73,13 @@ fn poseidon_benchmark(c: &mut Criterion) {
             BenchmarkId::new("Dusk-Network", rounds as u32),
             &dusk_input,
             |b, dusk_input| b.iter(|| dusk_hash(&dusk_input)),
+        );
+
+        //lambdaworks test
+        group.bench_with_input(
+            BenchmarkId::new("Lambdaworks", rounds as u32),
+            &lambda_input[0..],
+            |b, lambda_input| b.iter(|| lambda_pos.hash(&lambda_input[0..])),
         );
 
         //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
