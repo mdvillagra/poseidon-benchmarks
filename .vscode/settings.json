@@ -1,7 +1,0 @@
-{
-    "rust-analyzer.showUnlinkedFileNotification": false,
-    "files.associations": {
-        ".env*": "dotenv",
-        "stdio.h": "c"
-    }
-}
