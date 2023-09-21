@@ -63,7 +63,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
 
         //arkworks test
         group.bench_with_input(
-            BenchmarkId::new("Arkworks", rounds as u32),
+            BenchmarkId::new("arnaucube-arkworks", rounds as u32),
             &ark_input,
             |b, ark_input| b.iter(|| ark_pos.hash(ark_input.clone())),
         );
