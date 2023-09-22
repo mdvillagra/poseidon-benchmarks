@@ -11,6 +11,9 @@ build = "src/build.rs"
 lambdaworks-math = {path = "src/lambdaworks/math"}
 lambdaworks-crypto = {path = "src/lambdaworks/crypto"}
 
+#neptune
+neptune = {path = "src/neptune"}
+
 #arkworks
 ark-ff = "0.4.0"
 ark-bn254 = { version = "0.4.0" }
