@@ -4,3 +4,6 @@
 [submodule "src/lambdaworks"]
 	path = src/lambdaworks
 	url = https://github.com/lambdaclass/lambdaworks.git
+[submodule "src/cryptoexperts"]
+	path = src/cryptoexperts
+	url = https://github.com/CryptoExperts/poseidon.git
