@@ -7,3 +7,6 @@
 [submodule "src/cryptoexperts"]
 	path = src/cryptoexperts
 	url = https://github.com/CryptoExperts/poseidon.git
+[submodule "src/ingonyama"]
+	path = src/ingonyama
+	url = https://github.com/ingonyama-zk/poseidon-hash.git
