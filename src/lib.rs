@@ -35,4 +35,3 @@ pub fn poseidon_dusk_hash() -> BlsScalar {
 
     dusk_sponge::hash(&message)
 }
-

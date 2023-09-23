@@ -1,7 +1,10 @@
 use ark_std::rand::rngs::StdRng;
 use ark_std::rand::SeedableRng;
+use rand::prelude::*;
 
-use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, BenchmarkGroup, SamplingMode};
+use criterion::{
+    criterion_group, criterion_main, BenchmarkGroup, BenchmarkId, Criterion, SamplingMode,
+};
 use std::time::Duration;
 
 //dusk-network
@@ -11,32 +14,43 @@ use dusk_plonk::prelude::BlsScalar as dusk_BlsScalar;
 use dusk_poseidon::src::lib::sponge::hash as dusk_hash;
 
 //lambdaworks
+use hex_wrapper::Hex64;
 use lambdaworks_crypto::hash::poseidon as lambda_poseidon;
 use lambdaworks_math::elliptic_curve::short_weierstrass::curves::bls12_381::curve::BLS12381FieldElement;
-use hex_wrapper::Hex64;
 
 //neptune
-use neptune::poseidon::{HashMode, PoseidonConstants};
+use blstrs::Scalar as FrNeptune;
+use ff::Field;
+use neptune::sponge::vanilla::*;
+use rand_xorshift::XorShiftRng;
+use typenum::U4;
 
 fn poseidon_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Poseidon");
     group.sampling_mode(SamplingMode::Flat);
 
-    let n_inputs = 1; //number of inputs to try
-    let n_elems = 4; //number of elements per try
+    let n_inputs: u32 = 1; //number of inputs to try
+    let n_elems: usize = 4; //number of elements per try
 
+    //input vectors initialization
     let mut dusk_input: Vec<dusk_BlsScalar> = Vec::new();
     let mut lambda_input: Vec<BLS12381FieldElement> = Vec::new();
+    let mut neptune_input: Vec<FrNeptune> = Vec::new();
 
-    //Poseidon instantiations
-    let lambda_pos = lambda_poseidon::Poseidon::new();
+    //rngs
+    let dusk_rng = &mut StdRng::seed_from_u64(0xc10d);
+    const TEST_SEED: [u8; 16] = [
+        0x59, 0x62, 0xbe, 0x5d, 0x76, 0x3d, 0x31, 0x8d, 0x17, 0xdb, 0x37, 0x32, 0x54, 0x06, 0xbc,
+        0xe5,
+    ];
+    let mut neptune_rng = XorShiftRng::from_seed(TEST_SEED);
 
     for rounds in 0..n_inputs {
-        let dusk_rng = &mut StdRng::seed_from_u64(0xc10d);
-
         for _i in 0..n_elems {
             //dusk-network input preparation
             dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+            //neptune input preparation
+            neptune_input.push(FrNeptune::random(&mut neptune_rng));
             //lambdaworks input preparation
             let hex_input = format!(
                 "{}{}{}{}{}{}",
@@ -50,6 +64,24 @@ fn poseidon_benchmark(c: &mut Criterion) {
             let element = BLS12381FieldElement::from_hex(&hex_input[0..]).unwrap();
             lambda_input.push(element);
         }
+
+        //Poseidon instantiations
+        let lambda_pos = lambda_poseidon::Poseidon::new();
+        let neptune_constants = Sponge::<FrNeptune, U4>::simplex_constants(n_elems);
+        let mut neptune_sponge = Sponge::new_with_constants(&neptune_constants, Mode::Duplex);
+        let acc = &mut (); //necesary for neptune
+
+        //neptune test
+        group.bench_with_input(
+            BenchmarkId::new("Neptune", rounds as u32),
+            &neptune_input,
+            |b, neptune_input| {
+                b.iter(|| {
+                    neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
+                    neptune_sponge.squeeze_elements(1, acc);
+                })
+            },
+        );
 
         //dusk-network test
         group.bench_with_input(
