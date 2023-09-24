@@ -7,6 +7,11 @@ build = "src/build.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+#risc0
+risc0-zkp = {path = "src/risc0/risc0/zkp"}
+risc0-core = {path = "src/risc0/risc0/core"}
+
 #lambdaworks
 lambdaworks-math = {path = "src/lambdaworks/math"}
 lambdaworks-crypto = {path = "src/lambdaworks/crypto"}
