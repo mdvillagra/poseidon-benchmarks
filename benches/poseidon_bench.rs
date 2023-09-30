@@ -7,12 +7,6 @@ use criterion::{
 };
 use std::time::Duration;
 
-//dusk-network
-#[path = "../src/dusk_poseidon/mod.rs"]
-mod dusk_poseidon;
-use dusk_plonk::prelude::BlsScalar as dusk_BlsScalar;
-use dusk_poseidon::src::lib::sponge::hash as dusk_hash;
-
 //lambdaworks
 use hex_wrapper::Hex64;
 use lambdaworks_crypto::hash::poseidon as lambda_poseidon;
@@ -40,7 +34,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
     let n_elems: usize = 4; //number of elements per try
 
     //input vectors initialization
-    let mut dusk_input: Vec<dusk_BlsScalar> = Vec::new();
+
     let mut lambda_input: Vec<BLS12381FieldElement> = Vec::new();
     let mut neptune_input: Vec<FrNeptune> = Vec::new();
     let mut risc0_input: Vec<BabyBearElem> = Vec::new();
@@ -56,7 +50,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
     for rounds in 0..n_inputs {
         for _i in 0..n_elems {
             //dusk-network input preparation
-            dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+   
             //neptune input preparation
             neptune_input.push(FrNeptune::random(&mut neptune_rng));
             //lambdaworks input preparation
@@ -103,13 +97,6 @@ fn poseidon_benchmark(c: &mut Criterion) {
                     neptune_sponge.squeeze_elements(1, acc);
                 })
             },
-        );
-
-        //dusk-network test
-        group.bench_with_input(
-            BenchmarkId::new("Dusk-Network", rounds as u32),
-            &dusk_input,
-            |b, dusk_input| b.iter(|| dusk_hash(&dusk_input)),
         );
 
         //lambdaworks test
