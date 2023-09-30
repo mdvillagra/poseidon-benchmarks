@@ -1,11 +1,11 @@
-use ark_std::rand::rngs::StdRng;
-use ark_std::rand::SeedableRng;
-use rand::prelude::*;
-
 use criterion::{
-    criterion_group, criterion_main, BenchmarkGroup, BenchmarkId, Criterion, SamplingMode,
+    criterion_group, criterion_main, BenchmarkGroup, BenchmarkId, Criterion, SamplingMode, black_box
 };
 use std::time::Duration;
+
+//dusk-network
+use dusk_poseidon::sponge::hash as dusk_hash;
+use dusk_bls12_381::BlsScalar as dusk_BlsScalar;
 
 //lambdaworks
 use hex_wrapper::Hex64;
@@ -25,6 +25,7 @@ use risc0_core::field::{
     Elem, ExtElem,
 };
 use risc0_zkp::core::hash::poseidon_254::{self, Poseidon254HashSuite};
+use rand::prelude::*;
 
 fn poseidon_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Poseidon");
@@ -34,7 +35,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
     let n_elems: usize = 4; //number of elements per try
 
     //input vectors initialization
-
+    let mut dusk_input: Vec<dusk_BlsScalar> = Vec::new();
     let mut lambda_input: Vec<BLS12381FieldElement> = Vec::new();
     let mut neptune_input: Vec<FrNeptune> = Vec::new();
     let mut risc0_input: Vec<BabyBearElem> = Vec::new();
@@ -50,7 +51,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
     for rounds in 0..n_inputs {
         for _i in 0..n_elems {
             //dusk-network input preparation
-   
+            dusk_input.push(dusk_BlsScalar::random(dusk_rng));
             //neptune input preparation
             neptune_input.push(FrNeptune::random(&mut neptune_rng));
             //lambdaworks input preparation
@@ -80,11 +81,18 @@ fn poseidon_benchmark(c: &mut Criterion) {
 
         risc0_pos.hashfn.hash_elem_slice(&risc0_input);
 
+        //dusk-network test
+        group.bench_with_input(
+            BenchmarkId::new("Dusk-Network", rounds as u32),
+            &dusk_input,
+            |b, dusk_input | b.iter(|| black_box(&dusk_input)),
+        );
+
         //risc0 test
         group.bench_with_input(
             BenchmarkId::new("Risc0", rounds as u32),
             &risc0_input,
-            |b, risc0_input| b.iter(|| risc0_pos.hashfn.hash_elem_slice(&risc0_input)),
+            |b, risc0_input| b.iter(|| black_box(risc0_pos.hashfn.hash_elem_slice(&risc0_input))),
         );
 
         //neptune test
@@ -92,10 +100,10 @@ fn poseidon_benchmark(c: &mut Criterion) {
             BenchmarkId::new("Neptune", rounds as u32),
             &neptune_input,
             |b, neptune_input| {
-                b.iter(|| {
+                b.iter(|| black_box( {
                     neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
                     neptune_sponge.squeeze_elements(1, acc);
-                })
+                }))
             },
         );
 
@@ -103,7 +111,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::new("Lambdaworks", rounds as u32),
             &lambda_input[0..],
-            |b, lambda_input| b.iter(|| lambda_pos.hash(&lambda_input[0..])),
+            |b, lambda_input| b.iter(|| black_box( lambda_pos.hash(&lambda_input[0..]))),
         );
 
         //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
