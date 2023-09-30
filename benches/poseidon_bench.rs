@@ -1,11 +1,12 @@
 use criterion::{
-    criterion_group, criterion_main, BenchmarkGroup, BenchmarkId, Criterion, SamplingMode, black_box
+    black_box, criterion_group, criterion_main, BenchmarkGroup, BenchmarkId, Criterion,
+    SamplingMode,
 };
 use std::time::Duration;
 
 //dusk-network
-use dusk_poseidon::sponge::hash as dusk_hash;
 use dusk_bls12_381::BlsScalar as dusk_BlsScalar;
+use dusk_poseidon::sponge::hash as dusk_hash;
 
 //lambdaworks
 use hex_wrapper::Hex64;
@@ -20,12 +21,12 @@ use rand_xorshift::XorShiftRng;
 use typenum::U4;
 
 //risc0
+use rand::prelude::*;
 use risc0_core::field::{
     baby_bear::{BabyBear, BabyBearElem, BabyBearExtElem},
     Elem, ExtElem,
 };
 use risc0_zkp::core::hash::poseidon_254::{self, Poseidon254HashSuite};
-use rand::prelude::*;
 
 fn poseidon_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Poseidon");
@@ -85,7 +86,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::new("Dusk-Network", rounds as u32),
             &dusk_input,
-            |b, dusk_input | b.iter(|| black_box(&dusk_input)),
+            |b, dusk_input| b.iter(|| black_box(&dusk_input)),
         );
 
         //risc0 test
@@ -100,10 +101,12 @@ fn poseidon_benchmark(c: &mut Criterion) {
             BenchmarkId::new("Neptune", rounds as u32),
             &neptune_input,
             |b, neptune_input| {
-                b.iter(|| black_box( {
-                    neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
-                    neptune_sponge.squeeze_elements(1, acc);
-                }))
+                b.iter(|| {
+                    black_box({
+                        neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
+                        neptune_sponge.squeeze_elements(1, acc);
+                    })
+                })
             },
         );
 
@@ -111,7 +114,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
         group.bench_with_input(
             BenchmarkId::new("Lambdaworks", rounds as u32),
             &lambda_input[0..],
-            |b, lambda_input| b.iter(|| black_box( lambda_pos.hash(&lambda_input[0..]))),
+            |b, lambda_input| b.iter(|| black_box(lambda_pos.hash(&lambda_input[0..]))),
         );
 
         //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));

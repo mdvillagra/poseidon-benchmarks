@@ -8,15 +8,13 @@ extern "C" {
 }
 
 fn main() {
-    
-    let mut state: [c_ulonglong; 4] = [0,0,0,0];
+    let mut state: [c_ulonglong; 4] = [0, 0, 0, 0];
 
     println!("{:?}", state);
-    
+
     unsafe {
         permutation_3(state[0..].as_mut_ptr());
     }
 
     println!("{:?}", state);
-    
 }
