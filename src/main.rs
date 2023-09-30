@@ -1,20 +1,22 @@
-extern crate poseidon_functions;
+use libc::uint64_t;
+use std::ffi::c_void;
+use std::os::raw::c_ulonglong;
 
-use ark_ff::fields::{Fp128, Fp64, MontBackend, MontConfig, PrimeField};
-
-#[derive(MontConfig)]
-#[modulus = "11"]
-#[generator = "2"]
-pub struct FrConfig;
-pub type Fr = Fp64<MontBackend<FrConfig, 1>>;
-
+#[link(name = "_pos", kind = "static")]
 extern "C" {
-    fn hello_world();
+    fn permutation_3(state: *mut c_ulonglong);
 }
 
 fn main() {
-    let a = Fr::from(5);
-    let b = Fr::from(6);
-    println!("{:?}", <Fr as PrimeField>::MODULUS);
-    println!("{}", a + b);
+    
+    let mut state: [c_ulonglong; 4] = [0,0,0,0];
+
+    println!("{:?}", state);
+    
+    unsafe {
+        permutation_3(state[0..].as_mut_ptr());
+    }
+
+    println!("{:?}", state);
+    
 }
