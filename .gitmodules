@@ -13,3 +13,6 @@
 [submodule "src/risc0"]
 	path = src/risc0
 	url = https://github.com/risc0/risc0.git
+[submodule "src/dusk"]
+	path = src/dusk
+	url = https://github.com/dusk-network/Poseidon252
