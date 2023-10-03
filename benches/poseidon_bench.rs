@@ -37,7 +37,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("Poseidon");
     group.sampling_mode(SamplingMode::Flat);
 
-    let n_inputs: u32 = 0; //number of inputs to try
+    let n_inputs: u32 = 1; //number of inputs to try
     let n_elems: usize = 4; //number of elements per try
 
     //input vectors initialization
@@ -84,8 +84,8 @@ fn poseidon_benchmark(c: &mut Criterion) {
 
         //Poseidon instantiations
         let lambda_pos = lambda_poseidon::Poseidon::new();
-        let neptune_constants = Sponge::<FrNeptune, U4>::simplex_constants(n_elems);
-        let mut neptune_sponge = Sponge::new_with_constants(&neptune_constants, Mode::Duplex);
+        let neptune_constants = Sponge::<FrNeptune, U3>::simplex_constants(n_elems);
+        let mut neptune_sponge = Sponge::new_with_constants(&neptune_constants, Mode::Simplex);
         let acc = &mut (); //necesary for neptune
         let risc0_pos = Poseidon254HashSuite::new_suite();
         let mut ce_input_copy = cryptoexperts_input.clone(); 
@@ -119,7 +119,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
                 b.iter(|| {
                     black_box({
                         neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
-                        neptune_sponge.squeeze_elements(1, acc);
+                        //neptune_sponge.squeeze_elements(1, acc);
                     })
                 })
             },
