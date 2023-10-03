@@ -1,9 +1,6 @@
 [submodule "src/poseidon_rust"]
 	path = src/poseidon_rust
 	url = https://github.com/mdvillagra/poseidon-rust.git
-[submodule "src/lambdaworks"]
-	path = src/lambdaworks
-	url = https://github.com/lambdaclass/lambdaworks.git
 [submodule "src/cryptoexperts"]
 	path = src/cryptoexperts
 	url = https://github.com/CryptoExperts/poseidon.git
