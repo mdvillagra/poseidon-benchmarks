@@ -15,10 +15,6 @@ dusk-bls12_381 = { version = "0.11", default-features = false }
 risc0-zkp = {path = "src/risc0/risc0/zkp"}
 risc0-core = {path = "src/risc0/risc0/core"}
 
-#lambdaworks
-lambdaworks-math = {path = "src/lambdaworks/math"}
-lambdaworks-crypto = {path = "src/lambdaworks/crypto"}
-
 #neptune
 neptune = {path = "src/neptune"}
 rand_xorshift = "0.3.0"

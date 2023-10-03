@@ -761,25 +761,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "lambdaworks-crypto"
-version = "0.1.4"
-dependencies = [
- "lambdaworks-math",
- "serde",
- "sha2",
- "sha3",
- "thiserror",
-]
-
-[[package]]
-name = "lambdaworks-math"
-version = "0.1.4"
-dependencies = [
- "rayon",
- "thiserror",
-]
-
-[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1052,8 +1033,6 @@ dependencies = [
  "dusk-poseidon",
  "ff",
  "hex-wrapper",
- "lambdaworks-crypto",
- "lambdaworks-math",
  "libc",
  "neptune",
  "rand",
@@ -1362,16 +1341,6 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
-]
-
-[[package]]
-name = "sha3"
-version = "0.10.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75872d278a8f37ef87fa0ddbda7802605cb18344497949862c0d4dcb291eba60"
-dependencies = [
- "digest",
- "keccak",
 ]
 
 [[package]]
