@@ -29,10 +29,10 @@ use risc0_core::field::{
 use risc0_zkp::core::hash::poseidon_254::{self, Poseidon254HashSuite};
 
 fn poseidon_benchmark(c: &mut Criterion) {
-    let mut group = c.benchmark_group("Poseidon");
+    let mut group = c.benchmark_group("Poseidon-TeslaK40m");
     group.sampling_mode(SamplingMode::Flat);
 
-    let n_inputs: u32 = 0; //number of inputs to try
+    let n_inputs: u32 = 7; //number of inputs to try
     let n_elems: usize = 4; //number of elements per try
 
     //input vectors initialization
