@@ -29,11 +29,11 @@ use risc0_core::field::{
 use risc0_zkp::core::hash::poseidon_254::{self, Poseidon254HashSuite};
 
 fn poseidon_benchmark(c: &mut Criterion) {
-    let mut group = c.benchmark_group("Poseidon-TeslaK40m");
+    let mut group = c.benchmark_group("Poseidon-cryptoexperts-vs-risc0");
     group.sampling_mode(SamplingMode::Flat);
 
-    let n_inputs: u32 = 7; //number of inputs to try
-    let n_elems: usize = 4; //number of elements per try
+    let n_inputs: u32 = 16; //number of inputs to try
+    let n_elems: usize = 1; //number of elements per try
 
     //input vectors initialization
     let mut dusk_input: Vec<dusk_BlsScalar> = Vec::new();
@@ -74,29 +74,54 @@ fn poseidon_benchmark(c: &mut Criterion) {
         let mut neptune_sponge = Sponge::new_with_constants(&neptune_constants, Mode::Simplex);
         let acc = &mut (); //necesary for neptune
         let risc0_pos = Poseidon254HashSuite::new_suite();
-        let mut ce_input_copy = cryptoexperts_input.clone();
+        let ce_input_copy = cryptoexperts_input.clone();
 
         //cryptoexperts test
-        group.bench_with_input(
-            BenchmarkId::new("Cryptoexperts", rounds as u32),
-            &cryptoexperts_input,
-            |b, cryptoexperts_input| b.iter(|| black_box(hash(&mut ce_input_copy, 3))),
-        );
-
-        //dusk-network test
-        group.bench_with_input(
-            BenchmarkId::new("Dusk-Network", rounds as u32),
-            &dusk_input,
-            |b, dusk_input| b.iter(|| black_box(dusk_hash(&dusk_input))),
-        );
-
+        if rounds == 7 || rounds == 15 {
+            if rounds == 7 {
+                cryptoexperts_input.clear();
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+            } else {
+                cryptoexperts_input.clear();
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+            }
+            group.bench_with_input(
+                BenchmarkId::new("Cryptoexperts", rounds as u32),
+                &ce_input_copy,
+                |b, ce_input_copy| b.iter(|| black_box(hash(&ce_input_copy, 3))),
+            );
+        }
+        /*
+                //dusk-network test
+                group.bench_with_input(
+                    BenchmarkId::new("Dusk-Network", rounds as u32),
+                    &dusk_input,
+                    |b, dusk_input| b.iter(|| black_box(dusk_hash(&dusk_input))),
+                );
+        */
         //risc0 test
         group.bench_with_input(
             BenchmarkId::new("Risc0", rounds as u32),
             &risc0_input,
             |b, risc0_input| b.iter(|| black_box(risc0_pos.hashfn.hash_elem_slice(&risc0_input))),
         );
-
+        /*
         //neptune test
         group.bench_with_input(
             BenchmarkId::new("Neptune", rounds as u32),
@@ -110,6 +135,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
                 })
             },
         );
+        */
 
         //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
     }

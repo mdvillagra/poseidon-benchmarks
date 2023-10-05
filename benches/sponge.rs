@@ -10,7 +10,7 @@ extern "C" {
 /*********************************************************
 Hashing function
 *********************************************************/
-pub fn hash(input: &mut Vec<felt_t>, r: usize) -> felt_t {
+pub fn hash(input: &Vec<felt_t>, r: usize) -> felt_t {
     let mut state = absorb(input, r);
     //squeeze(&mut state, r)
     state.pop().unwrap()
@@ -34,7 +34,7 @@ Absorbing stage
 input is the unpadded input
 r is the rate
 *********************************************************/
-fn absorb(input: &mut Vec<felt_t>, r: usize) -> Vec<felt_t> {
+fn absorb(input: &Vec<felt_t>, r: usize) -> Vec<felt_t> {
     let mut state: Vec<felt_t> = Vec::new();
     let padded_input = pad(input, r as u32);
 
