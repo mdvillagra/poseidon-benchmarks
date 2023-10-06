@@ -20,6 +20,9 @@ Here we present the default parameters of the different instantiations of Poseid
 | [Cryptoexperts](https://github.com/CryptoExperts/poseidon)| $2^{256}-1$ | 128 |  $x^3$ |  8 | 83 | 3 |
 
 # Results
+
+All the results presented here were run over an Intel Xeon CPU of 2.40GHz.
+
 * [Default values from corresponding repositories](https://mdvillagra.github.io/poseidon-benchmarks/Poseidon-Xeon/report/index.html).
   
   The inputs in this case were randomly generated using the default instantiations of the repositories. The table below shows the number of field elements used for each input and its corresponding number of bits. Recall that each element from the scalar field of BLS12-381 uses 255 bits, cryptoexperts uses four limbs of unsigned 64 bits integers, and each element of Babybear uses 31 bits.
