@@ -18,3 +18,7 @@ Here we present the default parameters of the different instantiations of Poseid
 | [Risc0](https://github.com/risc0/risc0)        | Babybear |  128 |  $x^8$ |  8 | 42 | 3 |
 | [Neptune](https://github.com/lurk-lab/neptune)      | BLS12-381 scalar | 128 |  $x^5$ |  8 | 55 | 3 |
 | [Cryptoexperts](https://github.com/CryptoExperts/poseidon)| $2^{256}-1$ | 128 |  $x^3$ |  8 | 83 | 3 |
+
+# Results
+* [Default values from corresponding repositories](https://mdvillagra.github.io/poseidon-benchmarks/Poseidon-Xeon/report/index.html).
+* [Cryptoexperts vs Risc0](https://mdvillagra.github.io/poseidon-benchmarks/Poseidon-cryptoexperts-vs-risc0/report/index.html).
