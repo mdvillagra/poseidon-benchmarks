@@ -7,7 +7,7 @@ Repositories that are being used in this project are:
 3. https://github.com/risc0/risc0 
 4. https://github.com/lurk-lab/neptune
 
-# Poseidon parameters used in benchmarks
+# Default Poseidon parameters
 
 Here we present the default parameters of the different instantiations of Poseidon hash used in the benchmarks. Note that [Cryptoexperts](https://github.com/CryptoExperts/poseidon) only has the permutation function in C language, therefore, we constructed a sponge function in Rust for it.
 
