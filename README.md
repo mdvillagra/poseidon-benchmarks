@@ -1,4 +1,4 @@
-# poseidon-benchmarks
+# Poseidon Hash Benchmarks in Rust
 This is a repository comparing different Poseidon implementations in Rust.
 
 Repositories that are being used in this project are:
