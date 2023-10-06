@@ -21,7 +21,7 @@ Here we present the default parameters of the different instantiations of Poseid
 
 # Results
 
-All the results presented here were run over an Intel Xeon CPU of 2.40GHz.
+All the results presented here were executed over an Intel Xeon CPU of 2.40GHz.
 
 * [Default values from corresponding repositories](https://mdvillagra.github.io/poseidon-benchmarks/Poseidon-Xeon/report/index.html).
   
