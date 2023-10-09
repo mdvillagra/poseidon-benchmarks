@@ -5,10 +5,100 @@ pub type felt_t = [c_ulonglong; 4];
 #[link(name = "_pos", kind = "static")]
 extern "C" {
     fn permutation_3(state: *mut felt_t);
+    fn permutation_4(state: *mut felt_t);
+    fn permutation_5(state: *mut felt_t);
+    fn permutation_9(state: *mut felt_t);
 }
 
 /*********************************************************
-Hashing function
+Hashing function for width 9
+*********************************************************/
+pub fn hash9(input: &Vec<felt_t>) -> felt_t {
+    let mut state = absorb9(input, 9);
+    //squeeze(&mut state, r)
+    state.pop().unwrap()
+}
+
+/*********************************************************
+Absorbing stage for width 9
+input is the unpadded input
+r is the rate
+*********************************************************/
+fn absorb9(input: &Vec<felt_t>, r: usize) -> Vec<felt_t> {
+    let mut state: Vec<felt_t> = Vec::new();
+    let padded_input = pad(input, r as u32);
+
+    init_state(&mut state, r);
+
+    for i in (0..padded_input.len()).step_by(r) {
+        add_block(&padded_input[i..i + r], &mut state, r);
+        unsafe {
+            permutation_9(state[0..].as_mut_ptr());
+        }
+    }
+    state
+}
+
+/*********************************************************
+Hashing function for width 5
+*********************************************************/
+pub fn hash5(input: &Vec<felt_t>) -> felt_t {
+    let mut state = absorb5(input, 5);
+    //squeeze(&mut state, r)
+    state.pop().unwrap()
+}
+
+/*********************************************************
+Absorbing stage for width 5
+input is the unpadded input
+r is the rate
+*********************************************************/
+fn absorb5(input: &Vec<felt_t>, r: usize) -> Vec<felt_t> {
+    let mut state: Vec<felt_t> = Vec::new();
+    let padded_input = pad(input, r as u32);
+
+    init_state(&mut state, r);
+
+    for i in (0..padded_input.len()).step_by(r) {
+        add_block(&padded_input[i..i + r], &mut state, r);
+        unsafe {
+            permutation_5(state[0..].as_mut_ptr());
+        }
+    }
+    state
+}
+
+/*********************************************************
+Hashing function for width 4
+*********************************************************/
+pub fn hash4(input: &Vec<felt_t>) -> felt_t {
+    let mut state = absorb4(input, 4);
+    //squeeze(&mut state, r)
+    state.pop().unwrap()
+}
+
+/*********************************************************
+Absorbing stage for width 4
+input is the unpadded input
+r is the rate
+*********************************************************/
+fn absorb4(input: &Vec<felt_t>, r: usize) -> Vec<felt_t> {
+    let mut state: Vec<felt_t> = Vec::new();
+    let padded_input = pad(input, r as u32);
+
+    init_state(&mut state, r);
+
+    for i in (0..padded_input.len()).step_by(r) {
+        add_block(&padded_input[i..i + r], &mut state, r);
+        unsafe {
+            permutation_4(state[0..].as_mut_ptr());
+        }
+    }
+    state
+}
+
+/*********************************************************
+Hashing function for width 3
 *********************************************************/
 pub fn hash(input: &Vec<felt_t>, r: usize) -> felt_t {
     let mut state = absorb(input, r);
@@ -17,7 +107,7 @@ pub fn hash(input: &Vec<felt_t>, r: usize) -> felt_t {
 }
 
 /*********************************************************
-Squeezing stage
+Squeezing stage for width 3
 *********************************************************/
 fn squeeze(state: &mut Vec<felt_t>, r: usize) -> felt_t {
     let mut output: Vec<felt_t> = Vec::new();
@@ -30,7 +120,7 @@ fn squeeze(state: &mut Vec<felt_t>, r: usize) -> felt_t {
 }
 
 /*********************************************************
-Absorbing stage
+Absorbing stage for width 3
 input is the unpadded input
 r is the rate
 *********************************************************/
