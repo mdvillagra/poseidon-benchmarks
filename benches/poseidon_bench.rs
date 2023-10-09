@@ -29,10 +29,10 @@ use risc0_core::field::{
 use risc0_zkp::core::hash::poseidon_254::{self, Poseidon254HashSuite};
 
 fn poseidon_benchmark(c: &mut Criterion) {
-    let mut group = c.benchmark_group("Poseidon-cryptoexperts-vs-risc0");
+    let mut group = c.benchmark_group("Poseidon-all");
     group.sampling_mode(SamplingMode::Flat);
 
-    let n_inputs: u32 = 16; //number of inputs to try
+    let n_inputs: u32 = 32; //number of inputs to try
     let n_elems: usize = 1; //number of elements per try
 
     //input vectors initialization
@@ -50,7 +50,7 @@ fn poseidon_benchmark(c: &mut Criterion) {
     let mut neptune_rng = XorShiftRng::from_seed(TEST_SEED);
     let mut ce_rng = rand::thread_rng();
 
-    for rounds in 0..n_inputs {
+    for rounds in 7..n_inputs {
         for _i in 0..n_elems {
             //dusk-network input preparation
             dusk_input.push(dusk_BlsScalar::random(dusk_rng));
@@ -77,8 +77,8 @@ fn poseidon_benchmark(c: &mut Criterion) {
         let ce_input_copy = cryptoexperts_input.clone();
 
         //cryptoexperts test
-        if rounds == 7 || rounds == 15 {
-            if rounds == 7 {
+        if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
+            if rounds == 7 { //one field element
                 cryptoexperts_input.clear();
                 cryptoexperts_input.push([
                     ce_rng.gen::<u64>(),
@@ -86,8 +86,54 @@ fn poseidon_benchmark(c: &mut Criterion) {
                     ce_rng.gen::<u64>(),
                     ce_rng.gen::<u64>(),
                 ]);
-            } else {
+            } else if rounds == 15 { //two field elements
                 cryptoexperts_input.clear();
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+            } else if rounds == 23 { //three field elements
+                cryptoexperts_input.clear();
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+            } else if rounds == 31 {//four field elements
+                cryptoexperts_input.clear();
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
                 cryptoexperts_input.push([
                     ce_rng.gen::<u64>(),
                     ce_rng.gen::<u64>(),
@@ -107,38 +153,78 @@ fn poseidon_benchmark(c: &mut Criterion) {
                 |b, ce_input_copy| b.iter(|| black_box(hash(&ce_input_copy, 3))),
             );
         }
-        /*
-                //dusk-network test
-                group.bench_with_input(
-                    BenchmarkId::new("Dusk-Network", rounds as u32),
-                    &dusk_input,
-                    |b, dusk_input| b.iter(|| black_box(dusk_hash(&dusk_input))),
-                );
-        */
+
+        //dusk-network test
+        if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
+            if rounds == 7 { //one field element
+                dusk_input.clear();
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+            } else if rounds == 15 { //two field elements
+                dusk_input.clear();
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+            } else if rounds == 23 { //three field elements
+                dusk_input.clear();
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+            } else if rounds == 31 { //four field elements
+                dusk_input.clear();
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+                dusk_input.push(dusk_BlsScalar::random(dusk_rng));
+            }
+            group.bench_with_input(
+                BenchmarkId::new("Dusk-Network", rounds as u32),
+                &dusk_input,
+                |b, dusk_input| b.iter(|| black_box(dusk_hash(&dusk_input))),
+            );
+        }
+
         //risc0 test
         group.bench_with_input(
             BenchmarkId::new("Risc0", rounds as u32),
             &risc0_input,
             |b, risc0_input| b.iter(|| black_box(risc0_pos.hashfn.hash_elem_slice(&risc0_input))),
         );
-        /*
-        //neptune test
-        group.bench_with_input(
-            BenchmarkId::new("Neptune", rounds as u32),
-            &neptune_input,
-            |b, neptune_input| {
-                b.iter(|| {
-                    black_box({
-                        neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
-                        //neptune_sponge.squeeze_elements(1, acc);
-                    })
-                })
-            },
-        );
-        */
 
-        //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
+        //neptune test
+        if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
+            if rounds == 7 {//one field elements
+                neptune_input.clear();
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+            } else if rounds == 15 {// two field elements
+                neptune_input.clear();
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+            } else if rounds == 23 {//three field elements
+                neptune_input.clear();
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+            } else if rounds == 31 {//four field elements
+                neptune_input.clear();
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+                neptune_input.push(FrNeptune::random(&mut neptune_rng));
+            }
+            group.bench_with_input(
+                BenchmarkId::new("Neptune", rounds as u32),
+                &neptune_input,
+                |b, neptune_input| {
+                    b.iter(|| {
+                        black_box({
+                            neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
+                            //neptune_sponge.squeeze_elements(1, acc);
+                        })
+                    })
+                },
+            );
+        }
     }
+    //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
     group.finish();
 }
 
