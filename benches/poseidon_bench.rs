@@ -251,6 +251,10 @@ fn neptune_widths_bench(c: &mut Criterion) {
     let mut neptune_input: Vec<FrNeptune> = Vec::new();
 
     //rngs
+    const TEST_SEED: [u8; 16] = [
+        0x59, 0x62, 0xbe, 0x5d, 0x76, 0x3d, 0x31, 0x8d, 0x17, 0xdb, 0x37, 0x32, 0x54, 0x06, 0xbc,
+        0xe5,
+    ];
     let mut neptune_rng = XorShiftRng::from_seed(TEST_SEED);
 
     for rounds in 0..n_inputs {
