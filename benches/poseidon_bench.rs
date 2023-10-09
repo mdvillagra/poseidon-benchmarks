@@ -78,7 +78,8 @@ fn poseidon_benchmark(c: &mut Criterion) {
 
         //cryptoexperts test
         if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
-            if rounds == 7 { //one field element
+            if rounds == 7 {
+                //one field element
                 cryptoexperts_input.clear();
                 cryptoexperts_input.push([
                     ce_rng.gen::<u64>(),
@@ -86,21 +87,8 @@ fn poseidon_benchmark(c: &mut Criterion) {
                     ce_rng.gen::<u64>(),
                     ce_rng.gen::<u64>(),
                 ]);
-            } else if rounds == 15 { //two field elements
-                cryptoexperts_input.clear();
-                cryptoexperts_input.push([
-                    ce_rng.gen::<u64>(),
-                    ce_rng.gen::<u64>(),
-                    ce_rng.gen::<u64>(),
-                    ce_rng.gen::<u64>(),
-                ]);
-                cryptoexperts_input.push([
-                    ce_rng.gen::<u64>(),
-                    ce_rng.gen::<u64>(),
-                    ce_rng.gen::<u64>(),
-                    ce_rng.gen::<u64>(),
-                ]);
-            } else if rounds == 23 { //three field elements
+            } else if rounds == 15 {
+                //two field elements
                 cryptoexperts_input.clear();
                 cryptoexperts_input.push([
                     ce_rng.gen::<u64>(),
@@ -114,13 +102,29 @@ fn poseidon_benchmark(c: &mut Criterion) {
                     ce_rng.gen::<u64>(),
                     ce_rng.gen::<u64>(),
                 ]);
+            } else if rounds == 23 {
+                //three field elements
+                cryptoexperts_input.clear();
                 cryptoexperts_input.push([
                     ce_rng.gen::<u64>(),
                     ce_rng.gen::<u64>(),
                     ce_rng.gen::<u64>(),
                     ce_rng.gen::<u64>(),
                 ]);
-            } else if rounds == 31 {//four field elements
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+                cryptoexperts_input.push([
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                    ce_rng.gen::<u64>(),
+                ]);
+            } else if rounds == 31 {
+                //four field elements
                 cryptoexperts_input.clear();
                 cryptoexperts_input.push([
                     ce_rng.gen::<u64>(),
@@ -156,19 +160,23 @@ fn poseidon_benchmark(c: &mut Criterion) {
 
         //dusk-network test
         if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
-            if rounds == 7 { //one field element
+            if rounds == 7 {
+                //one field element
                 dusk_input.clear();
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
-            } else if rounds == 15 { //two field elements
+            } else if rounds == 15 {
+                //two field elements
                 dusk_input.clear();
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
-            } else if rounds == 23 { //three field elements
+            } else if rounds == 23 {
+                //three field elements
                 dusk_input.clear();
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
-            } else if rounds == 31 { //four field elements
+            } else if rounds == 31 {
+                //four field elements
                 dusk_input.clear();
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
                 dusk_input.push(dusk_BlsScalar::random(dusk_rng));
@@ -191,19 +199,23 @@ fn poseidon_benchmark(c: &mut Criterion) {
 
         //neptune test
         if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
-            if rounds == 7 {//one field elements
+            if rounds == 7 {
+                //one field elements
                 neptune_input.clear();
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
-            } else if rounds == 15 {// two field elements
+            } else if rounds == 15 {
+                // two field elements
                 neptune_input.clear();
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
-            } else if rounds == 23 {//three field elements
+            } else if rounds == 23 {
+                //three field elements
                 neptune_input.clear();
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
-            } else if rounds == 31 {//four field elements
+            } else if rounds == 31 {
+                //four field elements
                 neptune_input.clear();
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
                 neptune_input.push(FrNeptune::random(&mut neptune_rng));
@@ -223,6 +235,48 @@ fn poseidon_benchmark(c: &mut Criterion) {
                 },
             );
         }
+    }
+    //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
+    group.finish();
+}
+
+fn neptune_widths_bench(c: &mut Criterion) {
+    let mut group = c.benchmark_group("Neptune-widths");
+    group.sampling_mode(SamplingMode::Flat);
+
+    let n_inputs: u32 = 4; //number of inputs to try
+    let n_elems: usize = 1; //number of elements per try
+
+    //input vectors initialization
+    let mut neptune_input: Vec<FrNeptune> = Vec::new();
+
+    //rngs
+    let mut neptune_rng = XorShiftRng::from_seed(TEST_SEED);
+
+    for rounds in 0..n_inputs {
+        for _i in 0..n_elems {
+            //neptune input preparation
+            neptune_input.push(FrNeptune::random(&mut neptune_rng));
+        }
+
+        //Poseidon instantiations
+        let neptune_constants = Sponge::<FrNeptune, U3>::simplex_constants(n_elems);
+        let mut neptune_sponge = Sponge::new_with_constants(&neptune_constants, Mode::Simplex);
+        let acc = &mut (); //necesary for neptune
+
+        //neptune test
+        group.bench_with_input(
+            BenchmarkId::new("Neptune", rounds as u32),
+            &neptune_input,
+            |b, neptune_input| {
+                b.iter(|| {
+                    black_box({
+                        neptune_sponge.absorb_elements(&neptune_input, acc).unwrap();
+                        //neptune_sponge.squeeze_elements(1, acc);
+                    })
+                })
+            },
+        );
     }
     //group.significance_level(0.05).sample_size(100).measurement_time(Duration::from_secs(11));
     group.finish();
