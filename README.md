@@ -15,9 +15,9 @@ Here we present the default parameters of the different instantiations of Poseid
 | Repository   | Field | Security | S-box | Full rounds | Partial rounds| Width|
 | -------------| -------- | -------- |-------- |-------- |-------- |-------- |
 | [Dusk-Network](https://github.com/dusk-network/Poseidon252) | BLS12-381 scalar     |  128    | $x^5$ |  8 | 59| 5|
-| [Risc0](https://github.com/risc0/risc0)        | Babybear |  128 |  $x^8$ |  8 | 42 | 3 |
+| [Risc0](https://github.com/risc0/risc0)        | 256 bits |  128 |  $x^8$ |  8 | 42 | 3 |
 | [Neptune](https://github.com/lurk-lab/neptune)      | BLS12-381 scalar | 128 |  $x^5$ |  8 | 55 | 3 |
-| [Cryptoexperts](https://github.com/CryptoExperts/poseidon)| $2^{256}-1$ | 128 |  $x^3$ |  8 | 83 | 3 |
+| [Cryptoexperts](https://github.com/CryptoExperts/poseidon)| 256 bits | 128 |  $x^3$ |  8 | 83 | 3 |
 
 # Results
 
@@ -26,10 +26,8 @@ All the results presented here were executed over an Intel Xeon CPU of 2.40GHz. 
 * [Default values from corresponding repositories](https://mdvillagra.github.io/poseidon-benchmarks/Poseidon-Xeon/report/index.html).
   
   The inputs in this case were randomly generated using the default instantiations of the repositories. The table below shows the number of field elements used for each input and its corresponding number of bits. Recall that each element from the scalar field of BLS12-381 uses 255 bits, cryptoexperts uses four limbs of unsigned 64 bits integers, and each element of Babybear uses 31 bits.
-
-  **Obs.** These default values are unfair for comparison, because the number of bits in each field element differ. For example, the table below shows that babybear requires significantly less number of bits for each field element.
   
-  | Input | Number of elements | BLS12-381 | $2^{256}-1$ | Babybear |
+  | Input | Number of elements | BLS12-381 | 256 bits | Babybear |
   | ----- | ------------------ | --------- | ----------- | -------- |
   | 0     | 4                  | 1020      | 1024        | 124      |
   | 1     | 8                  | 2040      | 2048        | 248      |
@@ -42,7 +40,3 @@ All the results presented here were executed over an Intel Xeon CPU of 2.40GHz. 
 * [Cryptoexperts vs Risc0](https://mdvillagra.github.io/poseidon-benchmarks/Poseidon-cryptoexperts-vs-risc0/report/index.html).
 
 Here we compare two inputs of sizes 256 bits and 512 bits using the Poseidon instantiation of Risc0 vs Cryptoexperts. This is arguably a more fair comparison, since 8 field elements of babybear uses 248 bits and one field element from the scalar field of BLS12-381 uses 255 bits.
-
-* [All Poseidon instances with 4 inputs of sizes 256, 512, 768 and 1,024](https://mdvillagra.github.io/poseidon-benchmarks/criterion/Poseidon-all/report/index.html).
-
-Here we make a comparison of inputs with the same number of bits using all four instances of Poseidon.
