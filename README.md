@@ -15,7 +15,7 @@ Here we present the default parameters of the different instantiations of Poseid
 | Repository   | Field | Security | S-box | Full rounds | Partial rounds| Width|
 | -------------| -------- | -------- |-------- |-------- |-------- |-------- |
 | [Dusk-Network](https://github.com/dusk-network/Poseidon252) | BLS12-381 scalar     |  128    | $x^5$ |  8 | 59| 5|
-| [Risc0](https://github.com/risc0/risc0)        | 256 bits/Babybear |  128 |  $x^8$ |  8 | 42 | 3/24 |
+| [Risc0](https://github.com/risc0/risc0)        | 256 bits/Babybear |  128 |  $x^8$ |  8 | 42/21 | 3/24 |
 | [Neptune](https://github.com/lurk-lab/neptune)      | BLS12-381 scalar | 128 |  $x^5$ |  8 | 55 | 3 |
 | [Cryptoexperts](https://github.com/CryptoExperts/poseidon)| 256 bits | 128 |  $x^3$ |  8 | 83 | 3 |
 
