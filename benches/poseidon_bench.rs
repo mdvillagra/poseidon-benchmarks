@@ -52,21 +52,8 @@ fn poseidon_benchmark(c: &mut Criterion) {
 
     for rounds in 7..n_inputs {
         for _i in 0..n_elems {
-            //dusk-network input preparation
-            dusk_input.push(dusk_BlsScalar::random(dusk_rng));
-            //neptune input preparation
-            neptune_input.push(FrNeptune::random(&mut neptune_rng));
             //risc0 input
-            risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(
-                &mut neptune_rng,
-            )));
-            //cryptoexperts input
-            cryptoexperts_input.push([
-                ce_rng.gen::<u64>(),
-                ce_rng.gen::<u64>(),
-                ce_rng.gen::<u64>(),
-                ce_rng.gen::<u64>(),
-            ]);
+            risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
         }
 
         //Poseidon instantiations
@@ -191,11 +178,38 @@ fn poseidon_benchmark(c: &mut Criterion) {
         }
 
         //risc0 test
-        group.bench_with_input(
-            BenchmarkId::new("Risc0", rounds as u32),
-            &risc0_input,
-            |b, risc0_input| b.iter(|| black_box(risc0_pos.hashfn.hash_elem_slice(&risc0_input))),
-        );
+        if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
+            if rounds == 7 {
+                //one field elements
+                risc0_input.clear();
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+            } else if rounds == 15 {
+                // two field elements
+                risc0_input.clear();
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+            } else if rounds == 23 {
+                //three field elements
+                risc0_input.clear();
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+            } else if rounds == 31 {
+                //four field elements
+                risc0_input.clear();
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+                risc0_input.push(BabyBearElem::from(XorShiftRng::gen::<u32>(&mut neptune_rng)));
+            }
+            group.bench_with_input(
+                BenchmarkId::new("Risc0", rounds as u32),
+                &risc0_input,
+                |b, risc0_input| {
+                    b.iter(|| black_box(risc0_pos.hashfn.hash_elem_slice(&risc0_input)))
+                },
+            );
+        }
 
         //neptune test
         if rounds == 7 || rounds == 15 || rounds == 23 || rounds == 31 {
@@ -287,4 +301,5 @@ fn neptune_widths_bench(c: &mut Criterion) {
 }
 
 criterion_group!(benches, poseidon_benchmark);
+//criterion_group!(benches, neptune_widths_bench);
 criterion_main!(benches);
