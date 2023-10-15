@@ -100,7 +100,7 @@ fn absorb4(input: &Vec<felt_t>, r: usize) -> Vec<felt_t> {
 /*********************************************************
 Hashing function for width 3
 *********************************************************/
-pub fn hash(input: &Vec<felt_t>, r: usize) -> felt_t {
+pub fn hash3(input: &Vec<felt_t>, r: usize) -> felt_t {
     let mut state = absorb(input, r);
     //squeeze(&mut state, r)
     state.pop().unwrap()
