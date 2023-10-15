@@ -471,7 +471,5 @@ fn cryptoxperts_widths_bench(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, poseidon_benchmark);
-criterion_group!(benches, neptune_widths_bench);
-criterion_group!(benches, cryptoxperts_widths_bench);
+criterion_group!(benches, poseidon_benchmark, neptune_widths_bench, cryptoxperts_widths_bench);
 criterion_main!(benches);
