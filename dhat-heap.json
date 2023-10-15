@@ -1,0 +1,46 @@
+{
+"dhatFileVersion": 2,
+"mode": "rust-heap",
+"verb": "Allocated",
+"bklt": true,
+"bkacc": false,
+"tu": "µs",
+"Mtu": "s",
+"tuth": 10,
+"cmd": "target/debug/poseidon_benchmarks",
+"pid": 227185,
+"tg": 217,
+"te": 24063,
+"pps": [
+{
+"tb": 128,
+"tbk": 1,
+"tl": 23840,
+"mb": 128,
+"mbk": 1,
+"gb": 128,
+"gbk": 1,
+"eb": 0,
+"ebk": 0,
+"fs": [
+1,
+2,
+3,
+4,
+5,
+6,
+7
+]
+}
+],
+"ftbl": [
+"[root]",
+"0x56076e349059: <alloc::alloc::Global as core::alloc::Allocator>::allocate (alloc/src/alloc.rs:241:9)",
+"0x56076e348404: alloc::raw_vec::finish_grow (alloc/src/raw_vec.rs:485:9)",
+"0x56076e32dde3: alloc::raw_vec::RawVec<T,A>::grow_amortized (alloc/src/raw_vec.rs:404:19)",
+"0x56076e32e019: alloc::raw_vec::RawVec<T,A>::reserve_for_push (alloc/src/raw_vec.rs:302:24)",
+"0x56076e32d278: alloc::vec::Vec<T,A>::push (src/vec/mod.rs:1882:13)",
+"0x56076e21796e: poseidon_benchmarks::dusk (poseidon-benchmarks/src/main.rs:66:17)",
+"0x56076e21778c: poseidon_benchmarks::main (poseidon-benchmarks/src/main.rs:35:5)"
+]
+}
