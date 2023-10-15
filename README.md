@@ -7,9 +7,11 @@ Repositories that are being used in this project are:
 3. https://github.com/risc0/risc0 
 4. https://github.com/lurk-lab/neptune
 
+To run the benchmarks use the command `cargo +nightly bench`.
+
 # Default Poseidon parameters
 
-Here we present the default parameters of the different instantiations of Poseidon hash used in the benchmarks. Note that [Cryptoexperts](https://github.com/CryptoExperts/poseidon) only has the permutation function in C language, therefore, we constructed a sponge function in Rust for it. The Risc0 implementation has two versions, one with a field of 256 bits and another with the babybear field.
+Here we present the default parameters of the different instantiations of Poseidon hash used in the benchmarks. Note that [Cryptoexperts](https://github.com/CryptoExperts/poseidon) only has the permutation function in C language, therefore, we constructed a sponge function in Rust for it. The Risc0 implementation has two versions, one with a field of 256 bits and another with the babybear field of 31 bits.
 
 
 | Repository   | Field | Security | S-box | Full rounds | Partial rounds| Width|
@@ -23,16 +25,16 @@ Here we present the default parameters of the different instantiations of Poseid
 
 All the results presented here were executed over an Intel Xeon CPU of 2.40GHz. See [here](https://mdvillagra.github.io/poseidon-benchmarks/) for a list of detailed results.
 
-* [Default values from corresponding repositories](https://mdvillagra.github.io/poseidon-benchmarks/Poseidon-Xeon/report/index.html).
+* [Default values from corresponding repositories](https://mdvillagra.github.io/poseidon-benchmarks/criterion/Poseidon-all/report/index.html).
   
-  The inputs in this case were randomly generated using the default instantiations of the repositories. The table below shows the number of field elements used for each input and its corresponding number of bits. Recall that each element from the scalar field of BLS12-381 uses 255 bits, cryptoexperts uses four limbs of unsigned 64 bits integers, and each element of Babybear uses 31 bits.
+  The inputs in this case were randomly generated using the default instantiations of the repositories. The table below shows the number of bits required by the field elements. Recall that each element from the scalar field of BLS12-381 uses 255 bits, cryptoexperts uses four limbs of unsigned 64 bits integers, and each element of Babybear uses 31 bits.
   
-  | Input | Number of elements | BLS12-381 | 256 bits | Babybear |
-  | ----- | ------------------ | --------- | ----------- | -------- |
-  | 0     | 4                  | 1020      | 1024        | 124      |
-  | 1     | 8                  | 2040      | 2048        | 248      |
-  | 2     | 12                 | 3060      | 3072        | 372      |
-  | 3     | 16                 | 1530      | 4096        | 496      |
-  | 4     | 20                 | 5100      | 5120        | 620      |
-  | 5     | 24                 | 6120      | 6144        | 744      |
-  | 6     | 28                 | 7140      | 7168        | 868      |
+| Number of elements | BLS12-381 | 256 bits | Babybear |
+| -------------------- | ------------------ | --------- | ----------- | 
+| 4                                 | 1020      | 1024        | 124      |
+| 8                                 | 2040      | 2048        | 248      |
+| 12                                | 3060      | 3072        | 372      |
+| 16                                | 1530      | 4096        | 496      |
+| 20                               | 5100      | 5120        | 620      |
+| 24                               | 6120      | 6144        | 744      |
+| 28                               | 7140      | 7168        | 868      |
