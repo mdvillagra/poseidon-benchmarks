@@ -1,5 +1,5 @@
 # Poseidon Hash Benchmarks in Rust
-This is a repository comparing different Poseidon implementations in Rust.
+This is a repository comparing different Poseidon implementations in Rust. This project is supported by an [Ethereum Foundation](https://ethereum.foundation/) grant FY23-1156.
 
 Repositories that are being used in this project are:
 1. https://github.com/dusk-network/Poseidon252
